@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TextInput } from 'react-native';
 import PropTypes from 'prop-types';
 
 import algoliasearch from 'algoliasearch/reactnative';
@@ -48,12 +48,19 @@ export default class ReactNativeAlgoliaPlaces extends Component {
     render() {
         return(
             <View style={styles.containerStyle}>
-            <Search
-            defaultValue={this.state.textSearch}
+            <TextInput
+            value={this.props.text}
+            style={this.props.inputStyle}
+            placeholder={this.props.placeholder}
+            placeholderTextColor={this.props.placeholderTextColor}
             onChangeText={this.searchResults}
+            onFocus={this.props.onFocus}
+            returnKeyType="go"
+            selectionColor={'white'}
+            ref={this.props.inputRef}
             />
             {
-                this.state.search && this.state.search.hits.map((item, i) =>
+                (!this.props.hideList) && this.state.search && this.state.search.hits.slice(0, 4).map((item, i) =>
                     this.props.itemList(item, i, this.state.textSearch)
                 )
             }
@@ -80,6 +87,7 @@ ReactNativeAlgoliaPlaces.propTypes = {
     appKey: PropTypes.string,
     options: PropTypes.object,
 
+    inputStyle: PropTypes.object,
 
     onSearchError: PropTypes.func,
     itemList: PropTypes.func
@@ -87,7 +95,8 @@ ReactNativeAlgoliaPlaces.propTypes = {
 
 const styles = {
     containerStyle: {
-        padding: 2
+        flex: 1,
+        width: '100%',
     },
     rowStyle: {
         flexDirection: 'row',
